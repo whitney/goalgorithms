@@ -1,7 +1,6 @@
 package main
 
 import (
-    "fmt"
     "math"
 )
 
@@ -37,7 +36,7 @@ total water, in O(n) runtime with O(n) extra space.
 Optimal solution has a linear time compexity.
 */
 
-func solve(a []float64) float64 {
+func topology(a []float64) float64 {
     // observation: the amount of water held above any given index
     // of the input array depends on the max height to the left of the index 
     // and the max height to the right of the index.
@@ -71,16 +70,4 @@ func solve(a []float64) float64 {
     }
 
     return float64(w)
-}
-
-func main() {
-    a0 := []float64{1, 1, 3, 2, 1}
-    a1 := []float64{2, 1, 2}
-    a2 := []float64{3, 2, 1, 2, 3, 2}
-    a3 := []float64{3, 2, 1, 2, 3, 1, 3}
-
-    fmt.Printf("%v => %f\n", a0, solve(a0))
-    fmt.Printf("%v => %f\n", a1, solve(a1))
-    fmt.Printf("%v => %f\n", a2, solve(a2))
-    fmt.Printf("%v => %f\n", a3, solve(a3))
 }
