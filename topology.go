@@ -65,18 +65,14 @@ func topology(a []int) int {
         r[j] = max(a[j+1], r[j+1])
     } 
 
-    //fmt.Printf("a: %v, l: %v, r: %v\n", a, l, r)
-
     // Finally, the total amount of water the topology can hold is equal to the sum of 
-    // the amounts held at each index of a. Furthermore the amount of water held at a 
-    // given index i is equal to the lower of the two global maximums (to the left and to the right), 
+    // the amounts held at each index of a. Furthermore the amount of water held at 
+    // index i is equal to the lower of the two global maximums (to the left and to the right), 
     // minus the value of a[i]:
     w := 0
     for k := 0; k < len(a); k++ {
-        wi := min(l[k], r[k]) - a[k]
-        if wi > 0 {
-            w += wi
-        }
+        // amount of water at index i
+        w += max(0, min(l[k], r[k]) - a[k])
     }
 
     return w
