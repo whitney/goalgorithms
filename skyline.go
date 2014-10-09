@@ -13,3 +13,11 @@ the skyline would look like when silhouetted at night.
 
 See: https://briangordon.github.io/2014/08/the-skyline-problem.html 
 */
+
+type rect struct {
+    left, right, height int
+}
+
+func skyline(rects []rect) {
+
+}
