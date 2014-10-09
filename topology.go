@@ -1,9 +1,5 @@
 package main
 
-import (
-    "math"
-)
-
 /*
 Given an array of numbers (some candidates find it easier if they are integers, 
 but the general solution should work for floating points as well), assume these 
@@ -36,23 +32,37 @@ total water, in O(n) runtime with O(n) extra space.
 Optimal solution has a linear time compexity.
 */
 
-func topology(a []float64) float64 {
+func min(x, y int) int {
+    if x <= y {
+        return x
+    }
+    return y
+}
+
+func max(x, y int) int {
+    if x >= y {
+        return x
+    }
+    return y
+}
+
+func topology(a []int) int {
     // observation: the amount of water held above any given index
     // of the input array depends on the max height to the left of the index 
     // and the max height to the right of the index.
     // Preprocess two arrays l and r such that l[i] is the max value to the left
     // of i in a, and r[i] is the max value to the right of i in a.
 
-    l := make([]float64, len(a))
+    l := make([]int, len(a))
     l[0] = 0
     for i := 1; i < len(a); i++ {
-        l[i] = math.Max(a[i-1], l[i-1]) 
+        l[i] = max(a[i-1], l[i-1]) 
     }
 
-    r := make([]float64, len(a))
+    r := make([]int, len(a))
     r[len(a)-1] = 0
     for j := len(a) - 2; j >= 0; j-- {
-        r[j] = math.Max(a[j+1], r[j+1])
+        r[j] = max(a[j+1], r[j+1])
     } 
 
     //fmt.Printf("a: %v, l: %v, r: %v\n", a, l, r)
@@ -61,13 +71,13 @@ func topology(a []float64) float64 {
     // the amounts held at each index of a. Furthermore the amount of water held at a 
     // given index i is equal to the lower of the two global maximums (to the left and to the right), 
     // minus the value of a[i]:
-    var w float64 = 0
+    w := 0
     for k := 0; k < len(a); k++ {
-        wi := math.Min(l[k], r[k]) - a[k]
-        if wi > 0.0 {
+        wi := min(l[k], r[k]) - a[k]
+        if wi > 0 {
             w += wi
         }
     }
 
-    return float64(w)
+    return w
 }
