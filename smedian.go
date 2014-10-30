@@ -3,6 +3,7 @@ package main
 import (
     "container/heap"
     "errors"
+    "fmt"
     "log"
 )
 
@@ -57,25 +58,40 @@ func NewSMedian() *smedian {
     return &smedian{lHeap: lHeap, rHeap: rHeap}
 }
 
+func (s *smedian) print() {
+    fmt.Println("lHeap:")
+    for s.lHeap.Len() > 0 {
+        elem := heap.Pop(s.lHeap)
+        fmt.Printf("%d ", elem)
+    } 
+
+    fmt.Println("\nrHeap:")
+    for s.rHeap.Len() > 0 {
+        elem := heap.Pop(s.rHeap)
+        fmt.Printf("%d ", elem)
+    } 
+    fmt.Println("")
+}
+
 func (s *smedian) median() float64 {
     if s.lHeap.Len() == 0 && s.rHeap.Len() == 0 {
         return 0
     }
 
     if s.lHeap.Len() < s.rHeap.Len() {
-        med := s.rHeap.Pop()
-        s.rHeap.Push(med)
-        return med.(float64)
+        med := s.rHeap.Pop().(int)
+        heap.Push(s.rHeap, med)
+        return float64(med)
     } else if s.lHeap.Len() > s.rHeap.Len() {
-        med := s.lHeap.Pop()
-        s.lHeap.Push(med)
-        return med.(float64)
+        med := s.lHeap.Pop().(int)
+        heap.Push(s.lHeap, med)
+        return float64(med)
     } else {
-        lMed := s.lHeap.Pop()
-        s.lHeap.Push(lMed)
-        rMed := s.rHeap.Pop()
-        s.rHeap.Push(rMed)
-        return (lMed.(float64) + rMed.(float64)) / 2
+        lMed := s.lHeap.Pop().(int)
+        heap.Push(s.lHeap, lMed)
+        rMed := s.rHeap.Pop().(int)
+        heap.Push(s.rHeap, rMed)
+        return float64(lMed + rMed) / 2
     }
 }
 
@@ -87,41 +103,59 @@ func (s *smedian) add(elem int) {
     //
     // cases:
 
+    
+    if s.lHeap.Len() == 0 {
+        heap.Push(s.lHeap, elem)
+        return
+    }
+
     lMax := s.lHeap.Pop().(int)
+
+    if s.rHeap.Len() == 0 {
+        if elem >= lMax {
+            heap.Push(s.rHeap, elem)
+            heap.Push(s.lHeap, lMax)
+        } else {
+            heap.Push(s.lHeap, elem)
+            heap.Push(s.rHeap, lMax)
+        }
+
+        return
+    }
+
     rMin := s.rHeap.Pop().(int)
 
     if s.lHeap.Len() < s.rHeap.Len() {
         if elem <= rMin {
-            s.lHeap.Push(elem)
-            s.rHeap.Push(rMin)
+            heap.Push(s.lHeap, elem)
+            heap.Push(s.rHeap, rMin)
         } else {
-            s.rHeap.Push(elem)
-            s.lHeap.Push(rMin)
+            heap.Push(s.rHeap, elem)
+            heap.Push(s.lHeap, rMin)
         }
 
-        s.lHeap.Push(lMax)
+        heap.Push(s.lHeap, lMax)
     } else if s.lHeap.Len() > s.rHeap.Len() {
         if elem >= lMax {
-            s.rHeap.Push(elem)
-            s.lHeap.Push(lMax)
+            heap.Push(s.rHeap, elem)
+            heap.Push(s.lHeap, lMax)
         } else {
-            s.lHeap.Push(elem)
-            s.rHeap.Push(lMax)
+            heap.Push(s.lHeap, elem)
+            heap.Push(s.rHeap, lMax)
         }
 
-        s.rHeap.Push(rMin)
+        heap.Push(s.rHeap, rMin)
     } else {
         // same size heaps
         if elem <= lMax {
-            s.lHeap.Push(elem)
+            heap.Push(s.lHeap, elem)
         } else {
-            s.rHeap.Push(elem)
+            heap.Push(s.rHeap, elem)
         }
 
-        s.lHeap.Push(lMax)
-        s.rHeap.Push(rMin)
+        heap.Push(s.lHeap, lMax)
+        heap.Push(s.rHeap, rMin)
     }
-
 
     // assert heap size invariant
     if !heapInvarient(s.lHeap, s.rHeap) {
