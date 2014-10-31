@@ -79,17 +79,17 @@ func (s *smedian) median() float64 {
     }
 
     if s.lHeap.Len() < s.rHeap.Len() {
-        med := s.rHeap.Pop().(int)
+        med := heap.Pop(s.rHeap).(int)
         heap.Push(s.rHeap, med)
         return float64(med)
     } else if s.lHeap.Len() > s.rHeap.Len() {
-        med := s.lHeap.Pop().(int)
+        med := heap.Pop(s.lHeap).(int)
         heap.Push(s.lHeap, med)
         return float64(med)
     } else {
-        lMed := s.lHeap.Pop().(int)
+        lMed := heap.Pop(s.lHeap).(int)
         heap.Push(s.lHeap, lMed)
-        rMed := s.rHeap.Pop().(int)
+        rMed := heap.Pop(s.rHeap).(int)
         heap.Push(s.rHeap, rMed)
         return float64(lMed + rMed) / 2
     }
@@ -109,7 +109,7 @@ func (s *smedian) add(elem int) {
         return
     }
 
-    lMax := s.lHeap.Pop().(int)
+    lMax := heap.Pop(s.lHeap).(int)
 
     if s.rHeap.Len() == 0 {
         if elem >= lMax {
@@ -123,7 +123,7 @@ func (s *smedian) add(elem int) {
         return
     }
 
-    rMin := s.rHeap.Pop().(int)
+    rMin := heap.Pop(s.rHeap).(int)
 
     if s.lHeap.Len() < s.rHeap.Len() {
         if elem <= rMin {
